@@ -4,7 +4,9 @@ CONFIG -= app_bundle
 CONFIG -= qt
 LIBS += -lGL -lGLU -lglut
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    infraestrutura/janela.cpp
 
 HEADERS += \
-    enumeradores/enumcsg.h
+    enumeradores/enumcsg.h \
+    infraestrutura/janela.h

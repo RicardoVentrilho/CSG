@@ -3,8 +3,10 @@
 #include <math.h>
 
 #include "enumeradores/enumcsg.h"
+#include "infraestrutura/janela.h"
 
 using namespace enumeradores;
+using namespace infraestrutura;
 
 void one(void(*a)(void))
 {
@@ -248,17 +250,17 @@ void motion(int x, int y)
   glutPostRedisplay();
 }
 
-int main(int argc, char **argv)
+int main()
 {
     static GLfloat lightpos[] = {25.f, 50.f, -50.f, 1.f};
     static GLfloat sphere_mat[] = {1.f, .5f, 0.f, 1.f};
     static GLfloat cone_mat[] = {0.f, .5f, 1.f, 1.f};
     GLUquadricObj *sphere, *cone, *base;
 
-    glutInit(&argc, argv);
-    glutInitWindowSize(512, 512);
-    glutInitDisplayMode(GLUT_STENCIL|GLUT_DEPTH|GLUT_DOUBLE);
-    (void)glutCreateWindow("csg");
+    auto janela = new Janela(512, 512);
+
+    janela->mostre();
+
     glutDisplayFunc(redraw);
     glutKeyboardFunc(key);
     glutSpecialFunc(special);
