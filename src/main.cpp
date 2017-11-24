@@ -1,12 +1,25 @@
-#include <GL/gl.h>
-#include <GL/glut.h>
 #include <math.h>
+#include <iostream>
 
+#include "global.h"
 #include "enumeradores/enumcsg.h"
+#include "enumeradores/enumobjeto.h"
 #include "infraestrutura/janela.h"
 
 using namespace enumeradores;
 using namespace infraestrutura;
+using namespace std;
+
+/////////REFATORADO
+
+void altere_opcao_do_menu(int opcao)
+{
+  OPCAO_DO_MENU = opcao;
+  glutPostRedisplay();
+}
+
+///////////////////
+
 
 void one(void(*a)(void))
 {
@@ -84,8 +97,6 @@ void sub(void(*a)(void), void(*b)(void))
   glDisable(GL_STENCIL_TEST); /* reset things */
 }
 
-enum {SPHERE = 1, CONE};
-
 /* Draw a cone */
 GLfloat coneX = 0.f, coneY = 0.f, coneZ = 0.f;
 
@@ -109,15 +120,7 @@ void sphere(void)
 
 }
 
-int csg_op = CSG_A;
 
-/* add menu callback */
-
-void menu(int csgop)
-{
-  csg_op = csgop;
-  glutPostRedisplay();
-}
 
 GLfloat viewangle;
 
@@ -129,7 +132,7 @@ void redraw()
     glPushMatrix();
     glRotatef(viewangle, 0.f, 1.f, 0.f);
 
-    switch(csg_op) {
+    switch(OPCAO_DO_MENU) {
     case CSG_A:
       one(cone);
       break;
@@ -202,7 +205,6 @@ void key(unsigned char key, int x, int y)
   }
 }
 
-
 int picked_object;
 int xpos = 0, ypos = 0;
 int newxpos, newypos;
@@ -230,82 +232,102 @@ void motion(int x, int y)
   newxpos = x - startx;
   newypos = starty - y;
 
-  r = (newxpos + xpos) * 50.f/512.f;
+  r = (newxpos + xpos) * 50.f / 512.f;
+
   objx = r * (float)cos(viewangle * DEGTORAD);
-  objy = (newypos + ypos) * 50.f/512.f;
   objz = r * (float)sin(viewangle * DEGTORAD);
+  objy = (newypos + ypos) * 50.f/512.f;
 
   switch(picked_object) {
-  case CSG_A:
-    coneX = objx;
-    coneY = objy;
-    coneZ = objz;
-    break;
-  case CSG_B:
-    sphereX = objx;
-    sphereY = objy;
-    sphereZ = objz;
-    break;
+      case CSG_A:
+        coneX = objx;
+        coneY = objy;
+        coneZ = objz;
+        break;
+
+      case CSG_B:
+        sphereX = objx;
+        sphereY = objy;
+        sphereZ = objz;
+        break;
+      default:
+        break;
   }
+
   glutPostRedisplay();
 }
 
 int main()
 {
-    static GLfloat lightpos[] = {25.f, 50.f, -50.f, 1.f};
-    static GLfloat sphere_mat[] = {1.f, .5f, 0.f, 1.f};
-    static GLfloat cone_mat[] = {0.f, .5f, 1.f, 1.f};
-    GLUquadricObj *sphere, *cone, *base;
+    try
+    {
+        static GLfloat lightpos[] = {25.f, 50.f, -50.f, 1.f};
+        static GLfloat sphere_mat[] = {1.f, .5f, 0.f, 1.f};
+        static GLfloat cone_mat[] = {0.f, .5f, 1.f, 1.f};
+        GLUquadricObj *sphere, *cone, *base;
 
-    auto janela = new Janela(512, 512);
+        auto janela = new Janela(512, 512);
 
-    janela->mostre();
+        janela->mostre("Computação Gráfica");
 
-    glutDisplayFunc(redraw);
-    glutKeyboardFunc(key);
-    glutSpecialFunc(special);
-    glutMouseFunc(mouse);
-    glutMotionFunc(motion);
+//        janela->set_funcao_de_tela(redraw);
+//        janela->set_funcao_de_teclado(key);
+//        janela->set_funcao_especial(special);
+//        janela->set_funcao_de_Mouse(mouse);
+//        janela->set_funcao_de_Movimento(motion);
+//        janela->set_menu(menu);
 
-    glutCreateMenu(menu);
-    glutAddMenuEntry("A only", CSG_A);
-    glutAddMenuEntry("B only", CSG_B);
-    glutAddMenuEntry("A or B", CSG_A_OR_B);
-    glutAddMenuEntry("A and B", CSG_A_AND_B);
-    glutAddMenuEntry("A sub B", CSG_A_SUB_B);
-    glutAddMenuEntry("B sub A", CSG_B_SUB_A);
-    glutAttachMenu(GLUT_RIGHT_BUTTON);
+        //set_funcoes
+        glutDisplayFunc(redraw);
+        glutKeyboardFunc(key);
+        glutSpecialFunc(special);
+        glutMouseFunc(mouse);
+        glutMotionFunc(motion);
 
+        //set_menu
+        glutCreateMenu(altere_opcao_do_menu);
+        glutAddMenuEntry("A only", CSG_A);
+        glutAddMenuEntry("B only", CSG_B);
+        glutAddMenuEntry("A or B", CSG_A_OR_B);
+        glutAddMenuEntry("A and B", CSG_A_AND_B);
+        glutAddMenuEntry("A sub B", CSG_A_SUB_B);
+        glutAddMenuEntry("B sub A", CSG_B_SUB_A);
+        glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
 
-    glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-    glNewList(SPHERE, GL_COMPILE);
-    sphere = gluNewQuadric();
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, sphere_mat);
-    gluSphere(sphere, 20.f, 64, 64);
-    gluDeleteQuadric(sphere);
-    glEndList();
+        glNewList(SPHERE, GL_COMPILE);
+        sphere = gluNewQuadric();
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, sphere_mat);
+        gluSphere(sphere, 20.f, 64, 64);
+        gluDeleteQuadric(sphere);
+        glEndList();
 
-    glNewList(CONE, GL_COMPILE);
-    cone = gluNewQuadric();
-    base = gluNewQuadric();
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, cone_mat);
-    gluQuadricOrientation(base, GLU_INSIDE);
-    gluDisk(base, 0., 15., 64, 1);
-    gluCylinder(cone, 15., 0., 60., 64, 64);
-    gluDeleteQuadric(cone);
-    gluDeleteQuadric(base);
-    glEndList();
+        glNewList(CONE, GL_COMPILE);
+        cone = gluNewQuadric();
+        base = gluNewQuadric();
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, cone_mat);
+        gluQuadricOrientation(base, GLU_INSIDE);
+        gluDisk(base, 0., 15., 64, 1);
+        gluCylinder(cone, 15., 0., 60., 64, 64);
+        gluDeleteQuadric(cone);
+        gluDeleteQuadric(base);
+        glEndList();
 
-    glMatrixMode(GL_PROJECTION);
-    glOrtho(-50., 50., -50., 50., -50., 50.);
-    glMatrixMode(GL_MODELVIEW);
-    glutMainLoop();
+        glMatrixMode(GL_PROJECTION);
+        glOrtho(-50., 50., -50., 50., -50., 50.);
+        glMatrixMode(GL_MODELVIEW);
+        glutMainLoop();
+    }
+    catch(const char * erro)
+    {
+        cerr << erro << endl;
+    }
 
     return 0;
 }

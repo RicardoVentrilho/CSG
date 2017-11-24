@@ -12,7 +12,7 @@ namespace infraestrutura
             Janela();
             Janela(int altura, int largura);
             ~Janela();
-            void mostre();
+            void mostre(const char *descricao);
 
         private:
             void inicialize();
