@@ -13,4 +13,6 @@ HEADERS += \
     infraestrutura/janela.h \
     infraestrutura/esfera.h \
     enumeradores/enumobjeto.h \
-    global.h
+    global.h \
+    enumeradores/enumdirecao.h \
+    compartilhado.h
