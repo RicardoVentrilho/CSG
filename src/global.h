@@ -7,9 +7,9 @@
 
 using namespace enumeradores;
 
-int OPCAO_DO_MENU = CSG_A;
+int OPCAO_DO_MENU = OBJETO_A;
 
-int DIRECAO_DA_ANIMACAO = ANIM_LEFT;
+int DIRECAO_DA_ANIMACAO = ESQUERDA;
 
 GLfloat ANGULO_DE_ROTACAO;
 
@@ -17,9 +17,14 @@ GLfloat POSICAO_DA_ESFERA_NO_EIXO_X = 0.f, POSICAO_DA_ESFERA_NO_EIXO_Y = 0.f, PO
 
 GLfloat POSICAO_DO_CONE_NO_EIXO_X = 0.f, POSICAO_DO_CONE_NO_EIXO_Y = 0.f, POSICAO_DO_CONE_NO_EIXO_Z = 0.f;
 
-int picked_object;
-int xpos = 0, ypos = 0;
-int newxpos, newypos;
-int startx, starty;
+double DEGTORAD = (2 * 3.1415 / 360);
+
+int OBJETO_PINTADO;
+
+int POSICAO_X = 0, POSICAO_Y = 0;
+
+int NOVA_POSICAO_X, NOVA_POSICAO_Y;
+
+int POSICAO_INICIAL_X, POSICAO_INICIAL_Y;
 
 #endif // GLOBAL_H

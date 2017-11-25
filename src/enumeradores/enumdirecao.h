@@ -5,8 +5,8 @@ namespace enumeradores
 {
     enum EnumDirecao
     {
-        ANIM_LEFT,
-        ANIM_RIGHT
+        ESQUERDA,
+        DIREITA
     };
 }
 

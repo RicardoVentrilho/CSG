@@ -5,7 +5,7 @@ namespace enumeradores
 {
     enum EnumObjeto
     {
-        SPHERE = 1,
+        ESFERA = 1,
         CONE
     };
 }

@@ -5,12 +5,12 @@ namespace enumeradores
 {
     enum EnumCSG
     {
-        CSG_A,
-        CSG_B,
-        CSG_A_OR_B,
-        CSG_A_AND_B,
-        CSG_A_SUB_B,
-        CSG_B_SUB_A
+        OBJETO_A,
+        OBJETO_B,
+        A_CONJUNCAO_COM_B,
+        A_DISJUNCAO_COM_B,
+        A_INTERSECCAO_COM_B,
+        B_INTERSECCAO_COM_A
     };
 }
 
